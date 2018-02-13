@@ -2,6 +2,10 @@
 
 Teechain, an off-chain payment protocol that utilizes trusted execution environments (TEEs) to perform secure, efficient and scalable fund transfers on top of a blockchain.
 
+## Downloading the Teechain binaries
+
+To download the Teechain binaries, follow the download link at [teechain.network](https://teechain.network). This will require agreeing to a disclaimer before the files can be downloaded. The resulting download will be in the form of a tarball, and can be uncompressed using the command: ``tar xvzf teechain-alpha.tar.gz``.
+
 ## What is this?
 
 This repository contains instructions, binaries, and help content for the alpha release of the Teechain network. For this release we are providing pre-compiled binaries that can create and operate payment channels between users for the Bitcoin network. Our release targets Intel SGX as the trusted execution environment, and it includes separate binaries: (i) simulation binaries that can be run without requiring any special hardware; and (ii) debug Intel SGX binaries that can be run within an Intel SGX enclave.
@@ -25,10 +29,6 @@ For this release, we are providing the ability to: (i) fund Teechain nodes using
 
 What we are not providing in this release is: (i) the ability to route funds across multiple channels; or (ii) the ability to write
 state to stable storage through the use of monotonic counters. Although both of these features are in fact already implemented, we will only be making them available in a future release.
-
-## Downloading the Teechain binaries
-
-To download the Teechain binaries, follow the download link at [teechain.network](https://teechain.network). This will require agreeing to a disclaimer before the files can be downloaded. The resulting download will be in the form of a tarball, and can be uncompressed using the command: ``tar xvzf teechain-alpha.tar.gz``.
 
 ## Teechain requirements
 
