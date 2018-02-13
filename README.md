@@ -200,6 +200,18 @@ Side-channel attacks can violate the confidentiality of data held inside a TEE (
 To protect sensitive-data in the TEE, Teechain employs the use of side-channel resistant operations. These are specifically 
 constructed code blocks, such as functions or methods, that are implemented to be free from software-based side-channel attacks. By trusting the security of these code blocks and ensuring that sensitive data in the TEE is only ever created, accessed or destroyed through a direct invocation of these code blocks, Teechain can protect sensitive-data from side-channel attacks throughout the lifetime of that data. In addition, by employing the use of side-channel resistant encryption and decryption operations, sensitive-data can be protected and exchanged between TEEs without compromising the confidentiality and integrity of that data.
 
+#### Have you run this on the Bitcoin mainnet?
+
+We have operated Teechain payment channels on the Bitcoin mainnet. For example, the following sets of transactions show a simple payment channel created by Teechain for the mainnet. The channel contained two funding deposits of 500K satoshi each, from each party in the channel. We then performed around 50 million sends at random, back and forth between the two parties, before settling the channel and pushing the generated settlement transaction on the blockchain.
+
+The details of the payment channel are as follows:
+
+Alice's funding deposit paid 500k satoshi into Teechain address ``1PmF4XsLctLWfAQnnB8VC81Yh6xdYZpDAz``, using transaction ``75c619abbed28063683c87747958ba69744f8a17a0dfcf38665c2a6ab8db930d``, index ``1``. [Here](https://blockchain.info/tx/75c619abbed28063683c87747958ba69744f8a17a0dfcf38665c2a6ab8db930d) is the transaction on the Bitcoin Blockchain.
+
+Bob's funding deposit paid 500k satoshi into Teechain address ``1PmF4XsLctLWfAQnnB8VC81Yh6xdYZpDAz ``, using transaction ``75c619abbed28063683c87747958ba69744f8a17a0dfcf38665c2a6ab8db930d``, index ``1``. [Here](https://blockchain.info/tx/75c619abbed28063683c87747958ba69744f8a17a0dfcf38665c2a6ab8db930d) is the transaction on the Bitcoin Blockchain.
+
+We then performed over 50 million sends between the two parties, before settling the channel on Alice's side. The settlement transaction (seen [here](https://blockchain.info/tx/5ee6fa414511f55299b031d0db7e594b5c0ea98daae2283afdc3f521b86b89a4)) paid around 300k satoshi back to Bob, and 700k satoshi back to Alice (minus the miner fee, paid by Alice, calculated at 100 satosih per byte approximately).
+
 #### I'm having technical problems, what should I do?
 
 Depending on the type of errors you're seeing, some simple checks/fixes are as follows:
@@ -213,18 +225,6 @@ Depending on the type of errors you're seeing, some simple checks/fixes are as f
 4. If the Teechain processes die unexpectedly, check the log files for more information (an error message is usually provided).
 
 If you're still having problems using Teechain, feel free to open an issue on our Github [here](https://github.com/lsds/Teechain/issues).
-
-#### Have you run this on the Bitcoin mainnet?
-
-We have operated Teechain payment channels on the Bitcoin mainnet. For example, the following sets of transactions show a simple payment channel created by Teechain for the mainnet. The channel contained two funding deposits of 500K satoshi each, from each party in the channel. We then performed around 50 million sends at random, back and forth between the two parties, before settling the channel and pushing the generated settlement transaction on the blockchain.
-
-The details of the payment channel are as follows:
-
-Alice's funding deposit paid 500k satoshi into Teechain address ``1PmF4XsLctLWfAQnnB8VC81Yh6xdYZpDAz``, using transaction ``75c619abbed28063683c87747958ba69744f8a17a0dfcf38665c2a6ab8db930d``, index ``1``. [Here](https://blockchain.info/tx/75c619abbed28063683c87747958ba69744f8a17a0dfcf38665c2a6ab8db930d) is the transaction on the Bitcoin Blockchain.
-
-Bob's funding deposit paid 500k satoshi into Teechain address ``1PmF4XsLctLWfAQnnB8VC81Yh6xdYZpDAz ``, using transaction ``75c619abbed28063683c87747958ba69744f8a17a0dfcf38665c2a6ab8db930d``, index ``1``. [Here](https://blockchain.info/tx/75c619abbed28063683c87747958ba69744f8a17a0dfcf38665c2a6ab8db930d) is the transaction on the Bitcoin Blockchain.
-
-We then performed over 50 million sends between the two parties, before settling the channel on Alice's side. The settlement transaction (seen [here](https://blockchain.info/tx/5ee6fa414511f55299b031d0db7e594b5c0ea98daae2283afdc3f521b86b89a4)) paid around 300k satoshi back to Bob, and 700k satoshi back to Alice (minus the miner fee, paid by Alice, calculated at 100 satosih per byte approximately).
 
 ## Questions/Comments/Feedback
 
