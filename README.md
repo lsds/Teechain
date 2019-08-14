@@ -49,20 +49,21 @@ For both the PSW and the Driver we recommend installing version 2.1 ([here](http
 
 3. Ensure that you can run some of the Intel SGX provided sample applications first, before trying to run Teechain in simulation or hardware mode. Assuming the SDK was installed to ``/opt/intel/``, the example applications should be in ``/opt/intel/sgxsdk/SampleCode/``
 
-4. Finally, Teechain requires the curl development libraries, so also install those by running: ``sudo apt-get install libcurl-dev``.
+4. Teechain requires the following development libraries, so also install these by running: ``sudo apt-get install libcurl4-openssl-dev libssl-dev``.
 
+5. Finally, you'll need to configure the libsecp256k1 library. Go into the ``src/trusted/libs/bitcoin/secp256k1`` directory and execute ``./autogen.sh`` and ``./configure``.
 
 ## Checking Teechain works/Running Teechain examples
 
 This release includes test scripts that execute various features of Teechain payment channels. To check that Teechain is working, and has all the required components, we can execute some tests:
 
-1. First, to build Teechain, decide which mode you would like to build it for, simulation, hardware debug, or hardware production mode. We recommend trying simulation mode first. Go into the ``src/bin`` directory and execute the relevant build script, e.g. ``./make_sim.sh`` for simulation mode.
+1. First, to build Teechain, decide which mode you would like to build it for, simulation, hardware debug, or hardware production mode. We recommend trying simulation mode first. Go into the ``src/bin`` directory, run ``./gen_key.sh`` to generate a private key for enclave signing and then execute the relevant build script, e.g. ``./make_sim.sh`` for simulation mode.
 
 2. Next, execute any one of the test scripts in the ``src/bin/testnet`` directory, such as ``./teechain_send.sh``, to check that things are working. ``./teechain_send.sh`` will setup a simple channel between two endpoints on the local machine, add deposits to those channels, send some payments, check balances of the channel, terminate the channel, and return any unused deposits held by the enclave. The output should indicate a successful run (i.e., the last line should say something like "test passed!") Ignore any messages saying "process killed": the scripts simply kill the teechain processes at the end of each test using the ``./kill.sh`` script. 
 
 Assuming everything executes correctly, you will have succesfully operated a Teechain payment channel in simulation mode for the testnet. Note: no real testnet bitcoins would have been exchanged in this test script because the transactions presented to the enclaves are not legitimate transactions that have been placed in the testnet blockchain. To actually operate a real testnet bitcoin payment channel, with real testnet Bitcoins, see the ``How can I use Teechain`` instructions below. The only difference there is that the transactions presented to the Teechain enclaves will be real testnet transactions placed on the testnet blockchain.
 
-3. If you wish to operate Teechain on the testnet in Intel SGX hardware mode, first run ``./gen_key.sh`` to generate a private key for enclave signing and then run ``./make.sh`` for hardware pre-release mode. To run Teechain in production, execute ``make_real.sh`` for hardware production mode. Note that this will require a whitelisted signing key authorised by Intel. To see the difference between different compilation modes, look [here](https://software.intel.com/en-us/blogs/2016/01/07/intel-sgx-debug-production-prelease-whats-the-difference).
+3. If you wish to operate Teechain on the testnet in Intel SGX hardware mode, run ``./make.sh`` for hardware pre-release mode. To run Teechain in production, execute ``make_real.sh`` for hardware production mode. Note that this will require a whitelisted signing key authorised by Intel. To see the difference between different compilation modes, look [here](https://software.intel.com/en-us/blogs/2016/01/07/intel-sgx-debug-production-prelease-whats-the-difference).
 
 
 ## How can I use Teechain?
