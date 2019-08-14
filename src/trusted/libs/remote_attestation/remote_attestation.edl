@@ -1,0 +1,65 @@
+enclave {
+    include "service_provider.h"
+    include "ias_ra.h"
+
+    untrusted {
+        void ocall_ias_get_sigrl(
+            [user_check] uint8_t* gid, // gid memory is already outside the enclave
+            [in,out] uint32_t* p_sig_rl_size,
+            [in,out,size=MAX_OCALL_RETURN_SIZE] uint8_t* p_sig_rl);
+
+        void ocall_ias_get_attestation_evidence(
+            [user_check] sample_quote_t *p_isv_quote, // quote memory is already outside enclave
+            [user_check] uint8_t* pse_manifest, // unused at the moment
+            [in, out,size=MAX_OCALL_RETURN_SIZE] ias_att_report_t* p_attestation_verification_report,
+            [in, size=nonce_len] const char* nonce,
+            int nonce_len,
+            [out, size=MAX_OCALL_RETURN_SIZE] char* response_signature,
+            [out] int* response_signature_len,
+            [out, size=MAX_OCALL_RETURN_SIZE] char* response_body,
+            [out] int* response_body_len);
+
+        void ocall_get_signed_enclave_measurement(
+            [out, size=MAX_OCALL_RETURN_SIZE] char* measurement,
+            [out] int* measurement_len,
+            [out, size=MAX_OCALL_RETURN_SIZE] char* signature,
+            [out] int* signature_len);
+    };
+
+    trusted {
+        // trusted remote attestation ecalls for challenging enclave
+        public int ecall_sp_ra_proc_msg0_req(
+                [user_check] const sample_ra_msg0_t *p_msg0,
+                uint32_t msg0_size);
+        public int ecall_sp_ra_proc_msg1_req(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len, 
+                [user_check] const sample_ra_msg1_t *p_msg1,
+                uint32_t msg1_size,
+                [user_check] ra_samp_response_header_t *pp_msg2);
+        public int ecall_sp_ra_proc_msg3_req(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len, 
+                [user_check] const sample_ra_msg3_t *p_msg3,
+                uint32_t msg3_size,
+                [user_check] ra_samp_response_header_t *pp_att_result_msg);
+
+        // trusted remote attestation ecalls for responding to challenge
+        public sgx_status_t ecall_enclave_init_ra(
+                int b_pse,
+                [out] sgx_ra_context_t *p_context);
+        public sgx_status_t ecall_enclave_ra_close(
+                sgx_ra_context_t context);
+        public sgx_status_t ecall_verify_att_result_mac(
+                sgx_ra_context_t context,
+                [in,size=message_size] uint8_t* message,
+                size_t message_size,
+                [in,size=mac_size] uint8_t* mac,
+                size_t mac_size);
+        public sgx_status_t ecall_put_secret_data(
+                sgx_ra_context_t context,
+                [in,size=secret_size] uint8_t* p_secret,
+                uint32_t secret_size,
+                [in,count=16] uint8_t* gcm_mac);
+    };
+};

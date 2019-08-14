@@ -1,0 +1,16 @@
+*~
+trusted/teechain.o
+trusted/teechain_t.c
+trusted/teechain_t.h
+untrusted/teechain_u.c
+	untrusted/teechain_u.h
+teechain.signed.so
+	teechain.so
+test
+
+untrusted/teechain_u.h
+teechain.so
+teechain
+
+trusted/*.o
+untrusted/*.o

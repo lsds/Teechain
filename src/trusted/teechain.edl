@@ -1,0 +1,264 @@
+/* Enclave interface definition */
+
+enclave {
+    include "sgx_key_exchange.h"
+    include "sgx_trts.h"
+    include "service_provider.h"
+
+    from "sgx_tkey_exchange.edl" import *;
+    from "libs/mbedtls/mbedtls_sgx.edl" import *;
+
+    from "libs/remote_attestation/remote_attestation.edl" import *;
+    
+    untrusted {
+        // untrusted teechain ocalls
+        void ocall_print([in, string] const char* string);
+        void ocall_print_important([in, string] const char* string);
+        void ocall_error([in, string] const char* string);
+        void ocall_monotonic_counter_sleep();
+    };
+
+    trusted {
+
+        // ecalls for ghost enclave setup
+        public int ecall_debug_enclave();
+        public int ecall_benchmark_enclave();
+
+        // ecalls for primary enclave setup
+        public int ecall_primary(
+                bool use_monotonic_counters,
+                [user_check] char* user_output);
+
+        public int ecall_setup_deposits(
+                unsigned long long num_deposits,
+                [user_check] char* user_output);
+
+        public int ecall_deposits_made(
+                [in, size=address_len] const char* address,
+                int address_len,
+                unsigned long long miner_fee,
+                unsigned long long num_deposits,
+                [in, size=txids_len] const char* txids,
+                int txids_len,
+                [in, size=tx_indexes_len] unsigned long long* tx_indexes,
+                int tx_indexes_len,
+                [in, size=deposit_amounts_len] unsigned long long* deposit_amounts,
+                int deposit_amounts_len,
+                [user_check] char* user_output);
+
+        // ecalls for channel create
+        public int ecall_channel_id_generated(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                bool is_backup);
+
+        public int ecall_create_new_channel(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                bool initiator);
+
+        public int ecall_get_deposit_data_encrypted(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac);
+
+        public int ecall_store_encrypted_deposit_data(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_verify_deposits(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                [user_check] char* user_output);
+
+        public int ecall_remote_verify_deposits(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len);
+       
+        // ecalls for sending and receiving payments 
+        public int ecall_send_bitcoins(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                unsigned long long amount,
+                [user_check] char* encrypted_send_request,
+                [user_check] int* len,
+                [user_check] char* p_gcm_mac,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_receive_bitcoins(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action,
+                [user_check] char* user_output);
+
+        public int ecall_balance(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                [user_check] char* user_output);
+
+        public int ecall_get_user_output(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                [user_check] char* user_output);
+
+        // ecalls for deposit operations
+        public int ecall_add_deposit_to_channel(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                unsigned long long deposit_id,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_add_remote_deposit_to_channel(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_remove_deposit_from_channel(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                unsigned long long deposit_id,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_remove_remote_deposit_from_channel(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_verify_deposit_added_to_channel(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                sgx_ra_context_t context,
+                [user_check] char* user_output);
+
+        public int ecall_verify_deposit_removed_from_channel(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                sgx_ra_context_t context,
+                [user_check] char* user_output);
+
+        // ecalls for backup operations
+        public int ecall_backup();
+
+        public int ecall_create_new_backup_channel(
+        		[in, size=backup_channel_id_len] const char *backup_channel_id,
+        		int backup_channel_id_len,
+                bool initiator);
+        
+        public int ecall_get_backup_data_encrypted(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac);
+
+        public int ecall_store_encrypted_backup_data(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_verify_backup_stored(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context,
+                [user_check] char* next_hop_channel_id,
+                [user_check] bool* routing_complete,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_verify_channel_update_stored(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_store_encrypted_channel_update_data(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context,
+                [user_check] char* next_channel_id_to_send_on,
+                [user_check] int* send_action);
+
+        public int ecall_remove_backup(
+        		[in, size=backup_channel_id_len] const char *backup_channel_id,
+        		int backup_channel_id_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac);
+
+        public int ecall_remove_remote_backup(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                [user_check] char* encrypted_data_out,
+		        [user_check] int* encrypted_data_out_len,
+                [user_check] char* p_gcm_mac,
+                sgx_ra_context_t context);
+
+        public int ecall_verify_backup_removed(
+                [in, size=blob_len] const char* blob,
+                int blob_len,
+                sgx_ra_context_t context);
+       
+        // ecalls for channel termination and shutdown
+        public int ecall_return_deposits(
+                [user_check] char* user_output);
+
+        public int ecall_settle(
+                [in, size=channel_len] const char* channel_id,
+                int channel_len,
+                [user_check] char* user_output);
+
+        public int ecall_shutdown(
+                [user_check] char* user_output);
+    };
+};

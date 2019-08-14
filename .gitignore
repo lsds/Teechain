@@ -1,0 +1,17 @@
+*.o
+*.pyc
+src/bin/test/
+demo/test/
+.directory
+src/.cproject
+src/.project
+src/.settings/
+*.aux
+*.bbl
+*.blg
+*.fls
+*.log
+*.fdb_latexmk
+teechain.log
+teechain.pdf
+*.db
