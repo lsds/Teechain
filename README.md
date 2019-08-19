@@ -51,7 +51,7 @@ For both the PSW and the Driver we recommend installing version 2.1 ([here](http
 
 4. Teechain requires the following development libraries, so also install these by running: ``sudo apt-get install libcurl4-openssl-dev libssl-dev``.
 
-5. Finally, you'll need to configure the libsecp256k1 library. Go into the ``src/trusted/libs/bitcoin/secp256k1`` directory and execute ``./autogen.sh`` and ``./configure``.
+5. Finally, you'll need to configure the libsecp256k1 library. Go into the ``src/trusted/libs/bitcoin/secp256k1`` directory and execute: ``chmod +x autogen.sh && chmod +x configure && ./autogen.sh && ./configure``.
 
 ## Checking Teechain works/Running Teechain examples
 
