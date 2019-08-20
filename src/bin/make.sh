@@ -10,6 +10,6 @@ pushd ../
 
 echo "${bold}Making teechain for real hardware!${reset}"
 make clean
-make SGX_MODE=HW SGX_PRERELEASE=1
+make SGX_MODE=HW SGX_DEBUG=1
 
 popd
