@@ -91,7 +91,7 @@ Note: if you build Teechain for the testnet, but then run a mainnet test, the te
 
 ## Why are some features not supported?
 
-There are many features described in the Teechain paper not included in this release. These include: multi-hop payments, support for m-out-of-n deposits, dynamic deposit creation, dynamic committees, committee signature collection and the benchmarking of large Teechain network topologies.
+There are several features described in the Teechain paper not included in this release. These include: multi-hop payments, support for m-out-of-n deposits, dynamic deposit creation, dynamic committees, committee signature collection and the benchmarking of large Teechain network topologies.
 
 For various reasons, these features will only be open-sourced in the future.
 
@@ -270,7 +270,7 @@ If you're still having problems using Teechain, feel free to open an issue on ou
 
 ## Questions/Comments/Feedback
 
-If you have any questions or comments, or would like to provide feedback, feel free to raise an issue on the [GitHub](https://github.com/lsds/Teechain), or email us directly (our contact information can be found [here](https://teechain.network#contact));
+If you have any questions or comments, or would like to provide feedback, feel free to raise an issue, or email us directly (our contact information can be found [here](https://teechain.network#contact));
 
 ## License
 
